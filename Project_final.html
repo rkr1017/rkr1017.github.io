@@ -1,0 +1,497 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title></title>
+	<meta name="generator" content="LibreOffice 4.2.8.2 (Linux)">
+	<meta name="author" content="Rustem">
+	<meta name="created" content="20151224;222600000000000">
+	<meta name="changedby" content="Rustem">
+	<meta name="changed" content="20151228;40300000000000">
+	<meta name="AppVersion" content="14.0000">
+	<meta name="DocSecurity" content="0">
+	<meta name="HyperlinksChanged" content="false">
+	<meta name="LinksUpToDate" content="false">
+	<meta name="ScaleCrop" content="false">
+	<meta name="ShareDoc" content="false">
+	<style type="text/css">
+	<!--
+		@page { margin: 1in }
+		p { margin-bottom: 0.1in; direction: ltr; line-height: 120%; text-align: left; widows: 2; orphans: 2 }
+		a:link { color: #0000ff; so-language: zxx }
+	-->
+	</style>
+</head>
+<body lang="en-US" link="#0000ff" dir="ltr">
+<p style="margin-bottom: 0in; line-height: 100%"><font size="4" style="font-size: 16pt"><b>OpenStreetMap
+Project</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><a name="h.s4u2ykgx268"></a>
+<font size="4" style="font-size: 16pt"><b>Data Wrangling with MongoDB</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><a name="h.673n90p2z9na"></a>
+<font size="4" style="font-size: 16pt"><i><b>Rustem Krykbaev</b></i></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="4" style="font-size: 14pt"><b>Map
+Area: Boston, MA, United States</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="4" style="font-size: 14pt"><b>Initial
+inspection of dataset</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">Initial inspection
+of the xml file revealed inconsistencies in data representations:</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;cat
+boston_massachusetts.osm | grep 'addr:city'  -A12 | less</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><b>Examples of
+variations in fields:</b></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:city&quot; v=&quot;, Arlington, MA&quot; /&gt; 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:street&quot; v=&quot;Portsmouth St&quot; /&gt;</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:state&quot; v=&quot;MA- MASSACHUSETTS&quot; /&gt;</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:street&quot; v=&quot;Josephine Ave&quot; /&gt;</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:postcode&quot; v=&quot;MA 02116&quot; /&gt;</p>
+<p style="margin-bottom: 0in; line-height: 100%">&lt;tag
+k=&quot;addr:state&quot; v=&quot;MA&quot;/&gt;</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">There are variations
+in how street names, city names, state names, postcodes, etc. are
+represented in a dataset</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Analysis
+of an xml dataset with python scripts</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><b>Dataset
+statistics:</b></p>
+<p style="margin-bottom: 0in; line-height: 100%">1. Number of various
+tags. Script: counting_tags.py.</p>
+<p style="margin-bottom: 0in; line-height: 100%">{'bounds': 1,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'member': 9780,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'nd': 2247569,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'node': 1890133,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'osm': 1,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'relation': 1220,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'tag': 849108,</p>
+<p style="margin-bottom: 0in; line-height: 100%"> 'way': 294930}</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">2. Some variations
+in tag patterns. Script tag_types.py.</p>
+<p style="margin-bottom: 0in; line-height: 100%">{'lower': 751870,
+'lower_colon': 57083, 'other': 40151, 'problemchars': 4}</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">3. Number of unique
+users. Script unique_users.py.</p>
+<p style="margin-bottom: 0in; line-height: 100%">1062</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><b>Auditing the
+database entries: </b>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">1. Streets with
+abbreviated names. Script: find_street_names.py</p>
+<p style="margin-bottom: 0in; line-height: 100%">2. Types of
+abbreviations</p>
+<p style="margin-bottom: 0in; line-height: 100%">3. Variants in state
+name</p>
+<p style="margin-bottom: 0in; line-height: 100%">4. Variants in
+postcodes names</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">Abbreviated names
+were found by searching for a pattern that included (among other
+features) a one-letter word in the beginning of the street name, such
+as &quot;N&quot; or &quot;E&quot; and 2- or 3-letter words at the
+end, such as &quot;ave&quot;, &quot;st&quot;, etc. The resulting
+dictionaly (below) also included some non-abbreviated words, such as
+&quot;way&quot; or &quot;row&quot; which were excluded from
+subsequent name updating procedure.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">abbreviated streets:
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">{'A': {'A Street':
+2}, 'Ave.': {'Brighton Ave.': 2, 'Spaulding Ave.': 2, 'Massachusetts
+Ave.': 5, 'Somerville Ave.': 16, 'Huntington Ave.': 2}, 'St.':
+{'Maverick St.': 2, 'Pearl St.': 2, 'Banks St.': 2, 'Tremont St.': 3,
+'Centre St.': 2, 'Marshall St.': 2, 'Prospect St.': 2, 'Main St.': 4,
+'Albion St.': 27, &quot;Saint Mary's St.&quot;: 2, 'Boylston St.': 3,
+'Stuart St.': 2, 'Elm St.': 2, 'Brookline St.': 2}, 'St': {'Salem
+St': 2, 'Brentwood St': 9, 'Medford St': 2, 'Athol St': 7, 'Everett
+St': 16, 'South Waverly St': 3, 'Litchfield St': 30, 'Hampshire St':
+2, 'George St': 2, 'Winter St': 2, 'Broad St': 2, 'Cambridge St': 2,
+'Arsenal St': 5, 'Merrill St': 2, 'Maverick St': 2, 'Antwerp St': 14,
+'Beacon St': 2, '1629 Cambridge St': 2, 'Elm St': 3, 'Congress St':
+2, 'Lothrop St': 11, 'Stewart St': 22, 'Dane St': 2, 'Norfolk St': 2,
+'Bagnal St': 3, 'Cummington St': 2, 'Holton St': 25, 'Mackin St': 7,
+'Waverly St': 51, 'Court St': 2, 'Summer St': 3, 'Duval St': 13,
+'Kirkland St': 2, 'Adams St': 2, '644 Beacon St': 2, 'Grove St': 2,
+'Leighton St': 2, 'Richardson St': 13, 'Newbury St': 3, 'Sea St': 4,
+'Ware St': 2, 'Portsmouth St': 15}, 'Rd': {'Oakland Rd': 2, 'Abby
+Rd': 9, 'Bristol Rd': 2, 'Squanto Rd': 4, 'Goodnough Rd': 2,
+'Soldiers Field Rd': 14, 'Aberdeen Rd': 2}, 'P': {'P Street': 2},
+'Ct': {'Kelley Ct': 9}, 'Way': {'Harry Agganis Way': 2, 'Davidson
+Way': 2, 'Courthouse Way': 2, 'Artisan Way': 4, 'David G Mugar Way':
+2, 'Yawkey Way': 2, 'Ross Way': 2}, 'st': {'Church st': 2}, 'ave':
+{'Massachusetts ave': 2}, 'N': {'N Beacon St': 2}, 'Pl': {'Longfellow
+Pl': 3}, 'ST': {'Newton ST': 2}, 'Sq.': {'1 Kendall Sq.': 2}, 'Hwy':
+{&quot;Monsignor O'Brien Hwy&quot;: 2}, 'Ave': {'Massachusetts Ave':
+5, 'Highland Ave': 2, 'Lexington Ave': 2, 'Huntington Ave': 2,
+'Francesca Ave': 3, 'Willow Ave': 2, '360 Huntington Ave': 2,
+'Harrison Ave': 2, 'Somerville Ave': 20, 'Mystic Ave': 2, 'Blue Hill
+Ave': 2, 'Washington Ave': 3, 'Morrison Ave': 2, 'Boston Ave': 3,
+'738 Commonwealth Ave': 2, 'Josephine Ave': 69, 'Sagamore Ave': 2,
+'Commonwealth Ave': 14, &quot;St. Paul's Ave&quot;: 2, 'Concord Ave':
+2, 'Western Ave': 37, 'College Ave': 3}, 'rd.': {'Corey rd.': 2},
+'E': {'E Elm Avenue': 2, 'E 4th St': 2}, 'Row': {'East India Row': 2,
+'Assembly Row': 5}} 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">total number of
+street names mentioned is: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">3046 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">abbreviations are: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">['Ave.', 'St.',
+'St', 'Rd', 'Ct', 'st', 'ave', 'N', 'Pl', 'ST', 'Sq.', 'Hwy', 'Ave',
+'rd.', 'E'] 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">number of
+abbreviated street names mentioned: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">633 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">percentage of
+streets with abbreviated names is: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">21.0 %</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">unique variants of a
+state name are: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">'Ma', 'WA', 'MA-
+MASSACHUSETTS', 'ma', 'Massachusetts', 'MA', 'Massachussetts',
+'MASSACHUSETTS' 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">unique variants of
+cities names are: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">'Jamaica Plain',
+'Quincy', 'Arlington', 'East Boston', 'Cambridge, Massachusetts',
+'BOSTON', 'Hyde Park', 'West Roxbury', 'Arlington. MA', 'Watertown,
+MA', ', Arlington, MA', 'somerville', 'Newton Centre', 'Cambridge,
+MA', 'Chestnut Hill', 'Dorchester', 'Mattapan', 'South End',
+'Everett', 'Braintree', 'Brookline', 'boston', 'watertown, MA',
+'Charlestown', 'Milton', 'Allston', 'Boston, MA', 'Revere',
+'Watertown', 'Dedham', 'Malden', 'Weymouth', 'winthrop', 'Chelsea',
+'Roxbury Crossing', 'Medford', 'Roslindale', 'Belmont, MA',
+'Cambridge', 'Winthrop', 'South Boston', 'Hingham', 'Boston',
+'Newton', 'Belmont', 'Arlington, MA', 'Brookline, MA', 'Brighton',
+'Somerville', '2067 Massachusetts Avenue' 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">unique variants of
+postcodes are: 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">'02186', '02184',
+'02134-1327', '02131-4931', '02134-1322', '02134-1321', '02138-1901',
+'02132-3226', '01821', '02134-1433', '02108', '02026', '02476',
+'02474', '02472', '02139', '02134-1319', '02478', 'Mass Ave',
+'02136-2460', '02131-3025', '02136', '02140-1340', '02134', '02205',
+'02132', '02131', '02130', '01854', '02110-1301', '02138',
+'02138-2903', '02138-2901', '02134-1442', '01250', '02132-1239',
+'02446', '02445', '02138-2742', '02120', '02210', '02124', '02125',
+'02126', '02215', '02128', '02129', '02474-8735', '01240',
+'02114-3203', '02458', '02459', 'MA 02116', '01125', '02109',
+'02228', 'MA 02186', '02155', '02151', '02150', '02152', '02159',
+'02026-5036', '01238', '02138-2724', '02445-5841', '02138-2933',
+'02144', '02145', '02142', '02143', '02140', '02141', '02148',
+'02149', '02138-2735', '02138-2736', '02138-3824', '02134-1316',
+'02134-1317', '02134-1312', '02134-1313', '02134-1311', 'MA',
+'02134-1318', '01944', '02171', '02134-1409', '02174', '02170',
+'02122', '02138-2706', '02138-2701', '02140-2215', '02134-1420',
+'02127', '02114', '02134-1305', '02134-1307', '02134-1306', '02043',
+'02169', '02130-4803', '02138-2801', '02284-6028', '02119', '02118',
+'02138-3003', '02111', '02110', '02113', '02115', '02135', '02116',
+'02467', '02138-2762', '02138-2763'</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">Upon inspection some
+street names had house numbers in the beginning. Prepare_json.py
+script was modified to clear numbers from the names.</p>
+<p style="margin-bottom: 0in; line-height: 100%">Inconsistencies in
+state names (see above), all converted to &quot;MA&quot;</p>
+<p style="margin-bottom: 0in; line-height: 100%">Street names had
+various abbreviations, all converted to full words, such as &quot;Street&quot;,
+etc.</p>
+<p style="margin-bottom: 0in; line-height: 100%">Postcodes converted
+to 5-digit format</p>
+<p style="margin-bottom: 0in; line-height: 100%">City names had wrong
+values, such as '2067 Massachusetts Avenue', deleted. Also, deleted
+state abbreviations, such as 'Belmont, MA', converted to 'Belmont',
+Names converted to uppercase first character and lowercase rest of
+the word, such as 'BOSTON' and 'boston' to 'Boston'. ', Arlington,
+MA' converted to 'Arlington'.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">The datatset in the
+json format was prepared with the prepare_json.py script</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Importing
+json dataset into mongo database</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">mongoimport --db osm
+--collection boston --drop --file
+/home/rk1017/data_science_nano_degree/P3_data_wrangling/boston_massachusetts.osm.json</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Sizes
+of the detasets</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">1. size of the xml
+file</p>
+<p style="margin-bottom: 0in; line-height: 100%">$ u -s -h
+boston_massachusetts.osm</p>
+<p style="margin-bottom: 0in; line-height: 100%">403M	boston_massachusetts.osm</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">2. size of the json
+file</p>
+<p style="margin-bottom: 0in; line-height: 100%">$ du -s -h
+boston_massachusetts.osm.json</p>
+<p style="margin-bottom: 0in; line-height: 100%">463M	boston_massachusetts.osm.json</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Database
+queries to find some statistics</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">1. Number of unique
+users</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.distinct(&quot;created.user&quot;).length</p>
+<p style="margin-bottom: 0in; line-height: 100%">1043</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">or 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.aggregate([{&quot;$match&quot;:{&quot;created.user&quot;:{&quot;$exists&quot;:1}}},{&quot;$group&quot;
+: {&quot;_id&quot; : &quot;$created.user&quot;,&quot;count&quot; :
+{&quot;$sum&quot; : 1}}},{&quot;$group&quot; : {&quot;_id&quot; :
+&quot;_id.count&quot;,&quot;count&quot; : {&quot;$sum&quot; : 1}}}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;_id.count&quot;, &quot;count&quot; : 1043 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">2. Most prolific
+users</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.aggregate([{&quot;$match&quot;:{&quot;created.user&quot;:{&quot;$exists&quot;:1}}},{&quot;$group&quot;
+: {&quot;_id&quot; : &quot;$created.user&quot;,&quot;count&quot; :
+{&quot;$sum&quot; : 1}}},{&quot;$group&quot; : {&quot;_id&quot; :
+&quot;_id.count&quot;,&quot;count&quot; : {&quot;$sum&quot; : 1}}}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;crschmidt&quot;, &quot;count&quot; : 1228280 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;jremillard-massgis&quot;, &quot;count&quot; : 438418 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;OceanVortex&quot;, &quot;count&quot; : 92035 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;wambag&quot;, &quot;count&quot; : 82471 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">......</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">3. Number of nodes 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.find({&quot;type&quot;:&quot;node&quot;}).count()</p>
+<p style="margin-bottom: 0in; line-height: 100%">1890133</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">4. Number of ways</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.find({&quot;type&quot;:&quot;way&quot;}).count()</p>
+<p style="margin-bottom: 0in; line-height: 100%">294930</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">5. Number of
+restaurants</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;db.boston.aggregate([{&quot;$match&quot;:{amenity:&quot;restaurant&quot;}},{&quot;$group&quot;:{&quot;_id&quot;:&quot;$amenity&quot;,&quot;count&quot;:{&quot;$sum&quot;:1}}}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;restaurant&quot;, &quot;count&quot; : 538 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">6. Top amenities</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;db.boston.aggregate([{&quot;$match&quot;:{&quot;amenity&quot;:{&quot;$exists&quot;:1}}},
+{&quot;$group&quot;:{&quot;_id&quot;:&quot;$amenity&quot;,&quot;count&quot;:{&quot;$sum&quot;:1}}},{&quot;$sort&quot;:
+{&quot;count&quot;: -1}},{&quot;$limit&quot;: 5}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;parking&quot;, &quot;count&quot; : 1213 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;bench&quot;, &quot;count&quot; : 967 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;school&quot;, &quot;count&quot; : 763 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;restaurant&quot;, &quot;count&quot; : 538 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;parking_space&quot;, &quot;count&quot; : 444 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">7. Top cuisines</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;db.boston.aggregate([{&quot;$match&quot;:{&quot;cuisine&quot;:{&quot;$exists&quot;:1}}},
+{&quot;$group&quot;:{&quot;_id&quot;:&quot;$cuisine&quot;,&quot;count&quot;:{&quot;$sum&quot;:1}}},{&quot;$sort&quot;:
+{&quot;count&quot;: -1}},{&quot;$limit&quot;: 5}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;pizza&quot;, &quot;count&quot; : 63 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;coffee_shop&quot;, &quot;count&quot; : 57 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;sandwich&quot;, &quot;count&quot; : 46 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;american&quot;, &quot;count&quot; : 39 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;mexican&quot;, &quot;count&quot; : 38 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">8. Most mentioned
+cities:</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.aggregate([{&quot;$match&quot;:{&quot;address.city&quot;:{&quot;$exists&quot;:1}}},{&quot;$group&quot;
+: {&quot;_id&quot; : &quot;$address.city&quot;,&quot;count&quot; :
+{&quot;$sum&quot; : 1}}},{&quot;$sort&quot; : {&quot;count&quot; :
+-1}},{&quot;$limit&quot;: 7}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Boston&quot; ], &quot;count&quot; : 614 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Malden&quot; ], &quot;count&quot; : 413 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Cambridge&quot; ], &quot;count&quot; : 383 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Somerville&quot; ], &quot;count&quot; : 171 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Quincy&quot; ], &quot;count&quot; : 51 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Brookline&quot; ], &quot;count&quot; : 44 }</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+[ &quot;Arlington&quot; ], &quot;count&quot; : 37 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">9. Number of streets</p>
+<p style="margin-bottom: 0in; line-height: 100%">&gt;
+db.boston.aggregate([{&quot;$match&quot;:{&quot;address.street&quot;:{&quot;$exists&quot;:1}}},{&quot;$group&quot;
+: {&quot;_id&quot; : &quot;null&quot;,&quot;count&quot; : {&quot;$sum&quot;
+: 1}}}])</p>
+<p style="margin-bottom: 0in; line-height: 100%">{ &quot;_id&quot; :
+&quot;null&quot;, &quot;count&quot; : 3114 }</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Additional
+problems found</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">In most mentioned
+cities (above) there are obvious inconsistencies. For instance Malden
+is mentioned almost as much as Boston and almost ten times more than
+Brookline. This is despite the populations of Malden and Brookline
+are roughly equal to each other and are of about 60K in size. The
+population of Boston is much larger, but it is mentioned only
+slightly higher than Malden. This probably is due to the uneven
+amounts of data submission for various cities in greater Boston area.
+This issue should be addressed for the map to be informative. 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">Inconsistencies in
+various fields, such as street names, cities, state names, etc. could
+be addressed if some sorts of filters were introduced at submission
+stage so that fields have uniform entries.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><a name="_GoBack"></a>
+<br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Other
+ideas about the dataset</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">There are numerous
+irregularities in the data presented in OSM. Not all places are
+equally represented in the map data set that makes it difficult to do
+any comparative analyses. There is a reliance on individual
+contributors for the data submission, so the incentives to put in a
+new data must have a big impact on the data completeness. In that
+respect the gamification approach seems useful. This approach “strive
+to leverage people's natural desires for socializing, learning,
+mastery, competition, achievement, status, self-expression,&nbsp;altruism
+or closure” [1]. Individual contributors must have some incentives
+to keep submitting and cleaning the data. The potential drawback of
+this strategy could be that the quality of the data submitted can go
+down if users became too eager to submit a lot of data without the
+proper auditing. 
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">One way to fill in
+the missing data could include imputing values from the values within
+the same node. Various values, such as names of streets, cities,
+states, etc., could be found in other tags in the same node and could
+be imputed with the proper algorithm. The downside here could be that
+wrong values could be imputed. The algorithm would have a certain
+error rate associated with it.</p>
+<p style="margin-bottom: 0in; line-height: 100%">There are various
+resources, such as GoogleMap API, that could be used for checking the
+validity and completeness of the data. An algorithm can be put in
+place that would indicate the discrepancies between the OSM data and
+known resources so that the users will be presented with the
+information about the potential issues with the data and may work on
+the improvements. This approach will certainly require more resources
+to implement. An important aspect of it is to be aware of copyright
+issues.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font size="3" style="font-size: 12pt"><b>Conclusion</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">The original dataset
+was audited and cleaned. Street, city, state and postcode names were
+made uniform in all fields. Json dataset was imported into Mongodb
+and the resulting collection can be queried for the information
+retrieval.</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%">1. 
+https://en.wikipedia.org/wiki/Gamification</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+</body>
+</html>
