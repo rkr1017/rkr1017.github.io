@@ -1,0 +1,1244 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8">
+	<title></title>
+	<meta name="generator" content="LibreOffice 4.2.8.2 (Linux)">
+	<meta name="author" content="Rustem">
+	<meta name="created" content="20160418;130500000000000">
+	<meta name="changedby" content="Rustem">
+	<meta name="changed" content="20160422;164900000000000">
+	<meta name="AppVersion" content="14.0000">
+	<meta name="DocSecurity" content="0">
+	<meta name="HyperlinksChanged" content="false">
+	<meta name="LinksUpToDate" content="false">
+	<meta name="ScaleCrop" content="false">
+	<meta name="ShareDoc" content="false">
+	<style type="text/css">
+	<!--
+		@page { margin: 1in }
+		p { margin-bottom: 0.1in; direction: ltr; line-height: 120%; text-align: left; widows: 2; orphans: 2 }
+	-->
+	</style>
+</head>
+<body lang="en-US" dir="ltr">
+<p style="margin-bottom: 0in; line-height: 100%"><font size="4" style="font-size: 16pt"><b>Identify
+Fraud from Enron Email</b></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><a name="h.673n90p2z9na"></a>
+<font size="4" style="font-size: 16pt"><i><b>Rustem Krykbaev</b></i></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+goal of this project is to design an algorithm capable of identifying
+persons of interest in an Enron corporate fraud investigation
+utilizing machine learning approach.  The starting dataset consists
+of a Python nested dictionary file with employees names as keys.
+Values are dictionaries with financial and email items as secondary
+keys.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Below
+are some characteristics of the dataset programmatically extracted
+from the dictionary.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Basic
+dataset characteristics</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Dataset
+Statistics:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total
+number of persons in a dataset:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">146</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total
+number of features for each person:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">21</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total
+number of data points:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">3066</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of POIs:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">18</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of non/POIs:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">128</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+dataset is rather small, with only 146 people. It is unbalanced, only
+18 are POIs and 128 are non-POIs, almost 7 times difference. Below
+are some representative data values extracted for POI and non-POI.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">PRENTICE
+JAMES DATA:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total_stock_value:
+ 1095040</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total_payments:
+ 564348</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">exercised_stock_options:
+ 886231</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">from_this_person_to_poi:
+ NaN</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">from_poi_to_this_person:
+ NaN</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">salary:
+ NaN</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">bonus:
+ NaN</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">restricted_stock:
+ 208809</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">deferred_income:
+ NaN</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">poi:
+ False</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">LAY
+KENNETH L DATA:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total_stock_value:
+ 49110078</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">total_payments:
+ 103559793</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">exercised_stock_options:
+ 34348384</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">from_this_person_to_poi:
+ 16</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">from_poi_to_this_person:
+ 123</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">salary:
+ 1072321</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">bonus:
+ 7000000</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">restricted_stock:
+ 14761694</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">deferred_income:
+ -300000</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">poi:
+ True</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">It
+is evident that the data is not very consistent. There are many
+entries containing missing values represented as NaNs. As can be seen
+below, only 95 out of 146 people have known salary and only 111 have
+email addresses. In total payments category 14.4% are missing values.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">people
+with known salary: 95</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">people
+with email address: 111</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">%
+of people with NaN in total payments: 14.3835616438</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">%
+of poi with NaN in total payments: 0.0</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">With
+a small size of the dataset, missing values and unbalanced
+representation of targets it makes it difficult to design an
+algorithm with a high accuracy of prediction.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Outliers
+identification</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><img src="data:image/png;base64,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uwACAECTJYBUoSYbAU6ePDkfW3odAAA0RQIITc7QoUMbugrbNe1b/7Rx/dK+9U8b1y/tS2MngNDkeGOuX9q3/mnj+qV96582rl/al8ZOAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgBBAAAKIwAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAAAURgABAAAKI4AAAACFEUAAAIDCCCAAAEBhBBAAAKAwAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgBBAAAKIwAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAAAURgABAAAKI4AAAACFEUAAAIDCCCAAAEBhBBAAAKAwAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACSCXefffduOqqq2Lu3Ln5WLZsWUyZMiVOO+20Gl2/fPnyGD16dNx7772xcuXK6N+/f0ycODEOOOCAeq45AAA0XgJIJV5//fUYN25cdO/ePfr06ROzZs2q8bUbNmyIQYMGxdNPPx0XXHBB7L777vHDH/4wDjvssJg3b1706NGj/ioOAACNmABSiS5dusSSJUuiY8eO8cQTT8SnP/3pGl975513xu9///v4+c9/HieccEIuGzJkSPTq1SsuueSSmD59en1VGwAAGjUBpBKtWrXK4aM2UvDYc889y8NH0qFDhzjppJPi1ltvjXXr1uXXBwCApkYAqQdPPvlk9O3bd7PyNA/k5ptvjueeey7222+/BqgZAAA0LAGkHixevDgOPfTQzco7d+6cfy5atEgAAQCgSRJA6sGqVauidevWm5W3adMmT1BP5wEAoCkSQOpB27ZtY82aNZuVr169Opo1a5bPAwBAUySA1IM01CoNw9pUWVlaYasqo0aNinbt2lUoGzp0aD4AACjGjBkz8rGxtNcbdSOA1IO0b8js2bM3K58zZ07suOOOeTneqkyaNKnkJHYAAIpT6gvgtKdbv379GqhG2wcBpI7SXiEpCffs2TNatGiRywYPHpyX4r377rvjxBNPzGVpY8O77rorjjvuOEvwAgDQZAkgVbj++uvjrbfe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at68+WbX3nffffHtb38776b+05/+NPbdd9+49dZbN5uYDgAATY0AUokddtghL6Wbjsqk3pCNe0TK7LjjjnH11VfnAwAA+JAAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMI06gKxcuTLvKr5mzZoYNGhQdO/evaGrBAAA1EGjCSAjRoyIP/zhD/HnP/85P167dm0cdNBB5Y/btWsXjzzySBxwwAENWU0AAKAOGk0AefTRR+PLX/5y+ePbbrsth4+0g/gnP/nJ+Od//ue47LLL4t57723AWgIAAHXRaALIkiVLYq+99ip/nILGpz71qRg6dGh+PHLkyPj+97/fQLUDAAC2hkYTQHbaaad466238u/vvfdezJo1K77xjW+Un99ll11i+fLlDVU9AABgK2g0AaRv375x8803x+GHHx73339/vPPOO/GP//iP5edffPHF6NSpUwPWEAAAqKtGE0CuvPLKOOqoo/Kwqw0bNsTgwYOjf//+5efvueeeGDBgQAPWEAAAqKtGE0BS8Hj22Wfjd7/7Xey6665x6KGHlp9LQ7O+/vWvVygDAAC2PY0mgCR77LFHHH/88ZuVp0By7rnnNkCNAACAranRBJBXX321Rs/r1q1bPdcEAACoL40mgKQleJs1a1bt895///0CagMAANSHRhNAbrnlls0CSAobCxYsiKlTp0bHjh3jrLPOaqDaAQAAW0OjCSCnn356pecuvPDCOPDAA+0DAgAA27hGE0CqkjYpPOOMM2LSpElxzjnnNHR1AACAWtomAkiyfv36WLJkSUNXAwAAqINGH0DefvvteOyxx+L73/9+HHDAAQ1dHQAAoA4aTQBp3rx5patgpZ3R0/K7P/zhDwuuFQAAsDU1mgDyne98Z7MAkh63b98+evToEUceeWS0bNloqgsAANRCo/lEf+mllzZ0FQAAgHrWaAIIAACw/WtUAeSZZ56JyZMnx0svvRTLli3Lcz82loZk/frXv26g2gEAAHXVaALItGnT8l4frVq1in333TfP/djUpoEEAADYtjSaAJLmgKRldh988MHo0KFDQ1cHAACoB40mgCxatCi++c1vCh8AALAdazQBpHfv3jmEAAAA269GE0CuvvrqGDJkSBxzzDFx8MEHN3R1AACAetBoAsj48eOjXbt28dnPfjY+8YlP5J3PW7RoUeE5aRWs++67r4FqCAAA1FWjCSD/7//9vxwwUvBYsWJF/OUvf9nsOZvulA4AAGxbGk0AWbBgQUNXAQAAqGeNJoAAAADbv0YXQH7zm9/EzJkz45VXXsmPu3fvHl/84hfj0EMPbeCaAQAAddVoAsjatWtj6NChce+99+Ydz3fddddc/tZbb8XEiRPjhBNOiBkzZuSd0gEAgG1Towkgl112Wdxzzz15M8Lzzz8/OnXqlMv/+7//OweQ73//+3H55ZfHuHHjGrimAABAbTWaAHLbbbfF8OHD46qrrqpQ3rFjx7xE79KlS2PatGkCCAAAbMMaTQBZvHhxHHjggZWeT+d+9rOfFVgjAABga2s0AeSjH/1ozJo1K772ta+VPJ8mp6fnAAAA265GE0DS8KtLLrkkTz4fNWpU9OzZM288+Pzzz8c111wTd955Z54nAgAAbLsaTQD51re+FS+++GLcdNNNcfPNN0fz5s1z+fr16/OqWCmgpOcAAADbrkYTQFq0aBFTpkyJ8847Lx544IEK+4AMGjQoevfu3cA1BAAA6qrRBJAyqecjHWn4Vdnjst8BAIBtW6MJIGvWrImvfvWreandNORq4yFYF110UZx66qnx4x//OHbYYYcGrikAAFBbjSaAXHjhhTF16tT4+te/Ht/4xjeiR48euefjhRdeiB/84Adxww03xG677ZYnpAMAANumRhNApk+fHsOGDYvrrruuQvm+++4b119/fbz99tv5OQIIAABsuxpNAFm3bl0cdNBBlZ4/+OCD4xe/+EWBNQIAALa2RhNAjjrqqHjooYfiX//1X0ue/+UvfxlHHnlkwbUCAAC2pgYLIG+++WaFx+PGjYuTTjopTjzxxDjrrLPyRoRJ2ogwDcFKy/LefvvtDVFVAABgK2mwANKhQ4fNltdNq189/fTTcd99921Wnuy3337x3nvvFVZHAABg62qwAPKd73zH/h4AANDENFgAufTSSxvqP10ja9eujbFjx+aVt5YtW5Z3Yr/iiiti4MCBW/Q6I0eOjJ/85Cdx7LHHxv33319PtQUAgG1Do5mE3tgMHz487r777hg1alSejzJlypQYNGhQzJo1K6/IVRN//OMf46c//Wm0bdu2nmsLAADbBgGkhLlz5+YJ7xMnTswBJEl7lOy///5xwQUXxOzZs2v0Oueee24OMg8//HB9VhcAALYZAkgJd911V7Rs2TIPnyrTunXrGDFiRFx88cWxcOHC6Nq1a5WvkXZ1nz9/ftxzzz0CCAAA/A8BpISnnnoqevXqFTvvvHOF8v79+5efryqArFixIsaMGZPDSseOHeu1rgAAsC0RQEpYvHhxdO7cebPyVJaWBF60aFGV11922WWx4447xr/927/VVxUBAGCbJICUsGrVqjzkalNt2rQpP1+Z5557Ln7wgx/kOSStWrWqtzoCAMC2SAApIa1atWbNms3KV69eXX6+Mmni+SGHHBL/9E//VG/1AwCAbZUAUkIaalVqmFUampV06dKl5HWPPPJIPPTQQ3ni+SuvvJLL0pCttHt76jVJZbvttlvssssuVf7308pb7dq1q1A2dOjQfAAAUIwZM2bkY2PLly9voNpsPwSQEvr06ZP3+0iTyTeeiD5nzpy8e3s6X8prr72Wz59wwgkVylNZWjlr7733jkmTJsU555xT5X8/Padv3751/0MAAKi1Ul8Az5s3L/r169dANdo+CCAlDB48OCZMmBA33XRTnHfeebks7YyeNiM86KCDylfAWrJkSU7BaaPCFi1axOc///nc+7GptJzvXnvtFd/+9rfzXiIAANBUCSAlpOV2hwwZEhdddFEsXbq0fCf0NIRq8uTJ5c9LS+2m/T4WLFgQ3bp1i49+9KP52FSaF9KpU6f4x3/8xyL/DAAAaHQEkEpMmzYtxo4dG9OnT49ly5ZF7969Y+bMmTFgwIDy56ShVc2bN6/2tdLz0gEAAE2dAFKJHXbYIcaPH5+PyqTekI17RCrz0ksvbc2qAQDANksAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAAAURgABAAAKI4AAAACFEUAAAIDCCCAAAEBhBBAAAKAwAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgBBAAAKIwAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAAAURgABAAAKI4AAAACFEUAAAIDCCCAAAEBhBBAAAKAwAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgBBAAAKIwAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojABSibVr18bYsWNj+vTpsWzZsujdu3dcccUVMXDgwCqve+SRR+LWW2+N2bNnx1//+tfYc88944gjjohx48bl3wEAoCkTQCoxfPjwuPvuu2PUqFHRs2fPmDJlSgwaNChmzZoVBx98cKXXXXjhhTmwDBkyJPbZZ5946aWX4tprr42ZM2fGU089FR07dizwrwAAgMZFAClh7ty5cfvtt8fEiRNzAEmGDRsW+++/f1xwwQW5d6MykyZNikMOOaRC2VFHHRWHHnpoXHfddXH55ZfXa90BAKAxE0BKuOuuu6Jly5YxcuTI8rLWrVvHiBEj4uKLL46FCxdG165dS167afhIPvvZz8Zuu+0WzzzzTL3VGQAAtgUCSAlpqFSvXr1i5513rlDev3//8vOVBZBS3n333VixYkV06NBhq9YTAAC2NQJICYsXL47OnTtvVp7KNmzYEIsWLdqi10vDstatWxcnn3zy1qoiAABskwSQElatWpWHXG2qTZs25edr6rHHHsvzPr70pS/leSAAANCUCSAltG3bNtasWbNZ+erVq8vP18Szzz4bJ554Yl7C9+abb96qdQQAgG2RAFJCGmpVaphVGpqVdOnSpdrXeO211+LII4+M9u3b5yV4d9pppxr/99PKW+3atatQNnTo0HwAAFCMGTNm5GNjy5cvb6DabD8EkBL69OmT9/tIE8c3nog+Z86caNasWT5flTfffDOHj/feey+/TqdOnbbov5/mjPTt27dWdQcAYOso9QXwvHnzol+/fg1Uo+2DAFLC4MGDY8KECXHTTTfFeeedl8vSzuhpM8KDDjqofAWsJUuW5BScNips0aJFLlu5cmUcc8wxubckhY+99967wf4OAABobASQEtJyu2kn84suuiiWLl1avhP6K6+8EpMnTy5/3pgxY2Lq1KmxYMGC6NatWy475ZRT4vHHH897hsyfPz8fZVJvyvHHH1/43wMAAI2FAFKJadOmxdixY2P69OmxbNmyPJE8zeUYMGBA+XPScKzmzZtXuO5Pf/pTLr/lllvysbHu3bsLIAAANGkCSCV22GGHGD9+fD4qk3pDNu4RSV5++eX6rhoAAGyzBBAAAKAwAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgB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Md544438ftCvX7/4/ve/nyf9l3EPbx0CSANL30akoS3pqMqjjz66WVnZOtVNXdpUafz48fmoTPq2Z+Nv68vUtP2butq28eWXX54Pqvfyyy9X+xz3cd3Uto3dx9Ur9W9UKe7h2qlL+7p/ayYNcUtHddzDW4cAAgAAFEYAAQAACiOAAAAAhRFAAACAwgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAMA26d13342rrroq5s6dm49ly5bFlClT4rTTTqvV6x1++OHxm9/8puS5Vq1axZo1a+pSXf6HAAIAwDbp9ddfj3HjxkX37t2jT58+MWvWrDq93re//e0YOXJkhbIUcr761a/GUUcdVafX5kMCCABbzaWXXhqXX355rF+/vqGrAjQBXbp0iSVLlkTHjh3jiSeeiE9/+tN1er3Pf/7zm5Xdeuut+eepp55ap9fmQwIIAFtNs2bN8gFQhDQsKoWPmnjwwQfju9/9bsybNy+aN28en/vc5/LwrU984hNVXpcCyM477xzHHXfc1qgyIYAAALCdmzZtWpx++ulx9NFH59CxcuXKuOGGG+Kzn/1sPPnkk9GtW7eS16UhXg8//HAMHTo02rZtW3Ctt18CCACN1urVq6NNmzYNXQ1gG5bmcJx77rnxla98JYeOMsOHD49evXrFv//7v8eNN95Y8tqf/exn8f777xt+tZUJIADEihUr8uTL++67LxYvXhzt2rWLT37yk/mbwjSxc/bs2fGDH/wg/vCHP8TSpUvzkIfBgwfnf7irCwiTJ0+O6dOnx5///OdYvnx59OjRI77xjW/E1772tQrP22uvvaJ3795x9tlnx8UXXxzz58+P733ve3H33XfHW2+9FU899dRmr73vvvvG3nvvnYdWAJTyq1/9Kr/3nHzyyfHGG2+Ul6fhogceeGA8+uijlV572223xR577BEDBw4soqpNhgACQF7hJX3QT8HgH/7hH/I/0il0PPPMMzmA3HnnnbFq1ar4+te/Hrvvvnte7vLaa6+NhQsXxu23317la6dvFvfff/84/vjjo2XLlvGLX/wiv86GDRviX//1X8uflz4MPPvss3HKKafk+qRvK1PA2GmnnfLvf/nLXyqM1X788cfj+eefj0suuaTe2gXY9qX3ifR+k5bY3VR630lfuJTy8ssvx5w5c+Kcc87Jc0bYegQQAOKBBx7IS0+mHo8y3/zmN8t/T+WtW7cuf3zmmWfmnozUU/HXv/41PvrRj1b62o899liFa1P4OOaYY+Lqq6+uEECSF198MR566KEK3zamAJSCUepFST0uZdLjNDH0hBNOqN0fDTQJaVW+FDTSe0anTp02O5++GCklTT5P16UvRdi6BBAAYtddd83Dq9Lwq86dO292fuMAkSZvpt6Qz3zmM/kf9jSBs6oAsvG1b7/9dqxbty6vPvOf//mf8c4778Quu+xSfv5//a//tdlQh4985CO592TGjBnlAST9d++4444cPkwMBaqSvixJPSBpKNURRxxR4+vSe066tn///vVYu6ZJAAEg93CkFWI+9rGPRb9+/WLQoEF5J+EUCJLXXnstxo4dm4dPpZ2Gy6RvB9PY6qr83//7f/MwqTSUIYWXTa/dNICUkuqSAkcaFnbIIYfkMd3//d//HcOGDavLnw00AWkDwfRFRvoC47DDDtusxyOtdNWhQ4cKZWnOWRqCaohn/RBAAIghQ4bkXol77rkn90xMmDAhxo8fnx9/4QtfyL0SaSL4RRddVD4vI83/SKvIVLXp4EsvvZSvTfNKJk2alAPODjvsEDNnzoxrrrlms2sr681IHyDSxPc0hCIFkPRzzz33LLlpGNC0XH/99fn9Kb0nJffff3/+0iRJ8zfSlxxp9av0RUbfvn3zZPTUG/Lqq6/m96L0npIW2dhYeo8x/Kr+CCAAZGlsdFqZKh3pG8EDDjggrrzyyvxBP03iTOvob7wUZVobvzqpx2Tt2rX5Z9euXcvLf/3rX29R3dIE0PRB4Kc//WleGSut1pUmqtv0EEhfmKQwkaT3hPTFSTqS1EuaAkjaxyO9B6X3j/T8NWvW5MdpH5Azzjijwuul4VppcY3UG7zPPvsU/vc0BQIIQBOXeiHSMrxpiEKZNByhS5cu+R/pFi1alD9vY6kHo7oAUOraNOxqypQpW1zP9EEi9aKk4JHW9bcuP5Ck1apqIvXypqM66X2trAeF+iGAADRxaSJ4mkSe9vVIe3+klaXSHIs//vGPeaWqj3/843ki5vnnn59XvEpB5ec//3ke8lCdI488Mlq1ahXHHntsDg7pv/XjH/8497YsWbJki+qZVsNKy/mmJYHTcrzpMQDbHgEEoInbcccd46yzzspzP9KwhdRb0bNnzzxmOu2/kfzHf/xHHkudhi+kjQdPPPHEfE0KLJvauFck7TKcwkra5HD06NF5OFfZXiIjRozY7LrqelTSGO4LLrgg/wRg2ySAADRxqYciBYt0VCZNPE/7c2zq/fffr/A4rRiz6aoxX/ziF/OxqbTq1sbShPWa1LVsPggA2yYBBIBtxi233JKX0axq3xEAGjcBBIBGLe0dkla9evTRR+PPf/5zXmITgG2XAAJAo/a3v/0tr3jVvn37uPjii0sO5wJg2yGAANCode/evcrNDgHYtgggAABAYQQQAACgMAIIAABQGAEEAAAojAACAAAURgABAAAKI4AAAACFEUAAAIDCCCAAAEBhBBAAAKAw/x96iXwffDiy+wAAAABJRU5ErkJggg==" name="Picture 1" align="bottom" width="526" height="395" border="0"></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Plotting
+of the financial data reveals one potential outlier that is located
+far away from the rest of the group. Blue dots represent non-POIs and
+red dots represent POIs.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">To
+identify an outlier, salary and bonuses values were retrieved for the
+highest paid people.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">highest
+salaries:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[('TOTAL',
+26704229), ('SKILLING JEFFREY K', 1111258), ('LAY KENNETH L',
+1072321), ('FREVERT MARK A', 1060932)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">highest
+bonuses:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[('TOTAL',
+97343619), ('LAVORATO JOHN J', 8000000), ('LAY KENNETH L', 7000000),
+('SKILLING JEFFREY K', 5600000)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+item with the highest value is ‘TOTAL’, which is result of an
+erroneous extraction from the excel spreadsheet. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyAAAAJYCAYAAACadoJwAAAACXBIWXMAAA9hAAAPYQGoP6dpAABMFklEQVR4nOzdC7xlc90/8O9c3GmMayhkLp7Kf3KpIUO6DIOK9FBmShK6qUTlEhOii3IpKkVFDEPJpR6ZyaRJkvRgekpqLi7JrZhBwmBm/vNd0z6zz5l9rnP22vuc836/Xvtlztprrb32z9p7r8/63YYuWSoAAABKMLTRBwAAAAwcAggAAFAaAQQAACiNAAIAAJRGAAEAAEojgAAAAKURQAAAgNIIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0AAgAAlEYAAQAASiOAAAAApRFAAACA0gggAABAaQQQAACgNAIIAABQGgEEAAAojQACAACURgABAABKI4AAAAClEUAAAIDSCCAAAEBpBBAAAKA0AggAAFAaAQQAACiNAAIAAJRGAAEAAEojgAAAAKURQAAAgNIIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0AAgAAlEYAAQAASiOAAAAApRFAAACA0gggAABAaQQQAACgNAIIAABQGgGkSf373/+Or3zlK3HbbbcVjwULFsRFF10U73vf+3q0vze96U3xq1/9quZzq6yySixcuHBlDhcAALpEAGlSjz32WJx66qmxxRZbxLbbbhszZ85cqf2deOKJcfjhh7daliHnQx/6UEyYMGGl9g0AAF0lgDSpTTfdNB555JHYaKON4vbbb4/Xve51K7W/t7zlLSssu/TSS4v/vuc971mpfQMAQFcJIE0qm0Vl+OiK66+/Pr70pS/FHXfcEYMHD443vOENRfOtV73qVR1ulwFk7bXXjn322ac3DhkAADolgPRxl1xySbz//e+PPffcswgdzzzzTJx33nmx6667xp133hmbb755ze2yideMGTNi4sSJscYaa5R81AAADFQCSB+WfTiOPPLI+OAHP1iEjoqDDz44Ro8eHV/84hfj29/+ds1tL7/88li0aJHmVwAAlEoA6cNuuOGGePLJJ+PAAw+Mxx9/vGX5oEGDYscdd4xf/vKX7W572WWXxYYbbhjjx48v41ABAKAggPRhc+bMiSVLlhRD7LaVIWTYsGE1t7v33nvj1ltvjU984hNFnxEAACiLANKHLV68uAgaU6ZMiY033niF54cOrf2/Nzuf53aTJk2q9yECAEArAkgf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AANVnw8gZ511VhxwwAGx1157dXmG8s7kcLu5z+OPPz4effTRlpnQswlVdnavyKF2c76P++67r5jw8GUve1nxaCv7hWy88cbx9re/vVeODwAA+qo+H0BOP/30or/ErrvuGq961auKIJC1EdWyCdS1117brf1m5/bJkyfHlClTipG1sqbluuuui3HjxrXab87E3plcr73Z2gEAYCDp8wHk//7v/4qL+wwe2Wfjz3/+8wrr9OTif9VVVy3CTT7ak7Uh1TUi7cnhgQEAgH4QQLL5EwAA0Df0+QACAAD0Hf0mgPzqV78q+mhU5t/YYost4q1vfWvstttuDT4yAACgos8HkBweN8dnvuaaa4pJ/9Zdd91i+RNPPBFnnnlmMSdHTiCTM6UDAACN1ecDyCmnnFLMvZGTEX7qU58qhrtN//jHP4oA8tWvfjU+//nPx6mnntrgIwUAAPp8ALnsssvi4IMPjq985Sutlm+00UbFCFY5j0cOqSuAAABA4/X5APLwww/Hjjvu2O7z+dzll19e4hEBAADt6fMBJGcenzlzZnz4wx+u+Xx2Tq81OzkAAFC+Ph9AsvnVSSedVHQ+P+qoo2LkyJHFxINz5syJr33ta/GjH/2o6CcCAAA0Xp8PIJ/97Gdj3rx5cf7558cFF1wQgwcPLpYvXry4GBUrA0quAwAANF6fDyBDhgyJiy66KI4++uj42c9+1moekL333jvGjBnT4CMEAAAq+nwAqciaj3xk86vK35V/AwAAzaHPB5CFCxfGhz70oWKo3WxyVd0E6/jjj4/3vOc98d3vfjdWXXXVBh8pAADQ5wPIscceGxdffHF89KMfjY9//OMxYsSIouZj7ty5cc4558R5550X6623XtEhHQAAaKw+H0CmTJkSBx10UHzjG99otXzrrbeOb37zm/HUU08V6wggAADQeH0+gLzwwgux0047tfv8zjvvHD/96U9LPCIAAKA9fT6ATJgwIaZPnx4f+chHaj4/bdq02GOPPUo+KgAAoJY+F0Dmz5/f6u9TTz013vWud8U73/nOOOKII4qJCFNORJhNsHJY3iuuuKIRhwoAALTR5wLIBhtssMLwujn61R//+Me49tprV1ieXv3qV8eLL75Y2jECAAC19bkA8rnPfc78HgAA0Ef1uQBy8sknN/oQAACAHupzAQQAAOi7BBAAAKA0AggAAFAaAQQA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LUa9ykCTQWWUW6ANUxlBqromJDsN12vW7c5m9q5+bujST+GLL7ZeJzucZ5+P7swD0qPZxDvYaHj0zuzktV4i9ccZz83oDgCdE0Daseqqq8bpp59ePNqTtSHVNSIV2YE8m2/lg+aSzbGq1fvisKOZvTt6LkNHdycg7Mp+e7JRb81O3nY//fnC3IzuANA+AQQAACiNAAIAAJRGAAEAAEojgAAAAKURQAAAgNIIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0AAgAAlEYAAQAASiOAAAAApRFAAACA0gggAABAaQQQAACgNAIIAABQGgEEAAAojQACAACURgABAABKI4AAAAClEUAAAIDSCCAAAEBpBBAAAKA0AggAAFAaAQQAACiNAAIAAJRGAAEAAEojgAAAAKURQAAAgNIIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0AAgAAlEYAAQAASiOAAAAApRFAGHCmTp0aEydObPRh9FvKt/6UcX0p3/pTxvWlfGl2AggDji/m+lK+9aeM60v51p8yri/lS7MTQAAAgNIIIAAAQGkEEAAAoDQCSBN59tlni//efffdDT6S/u3JJ5+MO+64o9GH0W8p3/pTxvWlfOtPGdeX8q2vynVa5bqN7hNAmsh9991X/Pe9731vYw9kANhhhx0afQj9mvKtP2VcX8q3/pRxfSnf+svrtnHjxjX6MPokAaSJTJgwIaZMmRJbbrllrLHGGo0+HAAA2siajwwfed1GzwggTWSDDTaI97znPY0+DAAAOqDmY+UIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0A0k033nhjXHrppXHzzTfH3//+93jpS18ab37zm+PUU08t/t3WLbfcEsccc0zceeed8ZKXvCTe9a53xRe/+MVYa621Wq23ZMmS+OpXvxrf/va34+GHH47Ro0fH8ccfHwceeOAK+3zooYfik5/8ZNxwww2xePHieNOb3hRnn312vOIVr1hh3Z/85CdxyimnxJ///OfYaKON4pBDDonJkyfHkCFDWq33/PPPF8tzFK4FCxbEmDFj4rTTTovx48evZIk1Xn9+bx353//937joooti5syZxWgd66+/fuy0007Fex81alSrdf/yl78U59RvfvObWHXVVeOtb31rnHXWWcXACG1973vfizPPPDPuvffeePnLXx6f+MQn4mMf+9gK6+U49J/5zGfimmuuiWeeeSbGjh1bbLfddtutsG49PieN8IUvfKE417bZZpv4v//7v1bPKeOey/kMTj755KLsnnvuudhqq63iQx/6UKsyUb49M3fu3DjxxBOLcps/f35svvnmMWnSpPj0pz/dajRG5du5f//73/GVr3wlbrvttuKRvzf5Hfy+971vhXX7Y3l259qkp7pSxnnMP/jBD+Lqq68u3l+e13kMecx5Xq+22mor7FcZl08A6aZjjz22OOEPOOCA4iLunnvuiXPPPTeuu+66mDVrVnGRX5F/50Xuq171quIEycCSJ1l+4ef61T772c/G6aefXvyovva1r41rr722+BEYPHhwcdJW5IfvjW98Y/zrX/8qfjSGDh1afGnlsny94cOHt6x7/fXXx3777VcEpG984xvxxz/+sbj4/Oc//xnf/OY3W73+wQcfHFdddVUcddRRMXLkyOIDvffeexcXrzvvvHOdSrMc/fm9dSTPp/wCzHM1Q9cjjzxSnKvbb799/O53vyvOy/Tggw/GrrvuWpw7X/7yl4tzK8/TP/3pT8UXfJ5jFd/5znfiIx/5SLHPT33qU/HrX/+6+KLOIQnzS7kiv1CzjPOcyy/gDD/f+ta3ivM0LyZHjBjRsm49PieNkOX4pS99KdZee+2azynjnvn5z38e++yzT3Hefu5znyvKd968ecV7qFC+PZPH+brXva4ot49//OOx3nrrxW9/+9s46aSTiveYF3BJ+XbNY489VtyM3GKLLWLbbbctfmNq6Y/l2Z1rk3qXcQaDD3zgA/H617++KLu8Lquc13kT+Re/+EWr9ZVxYwgg3ZQn0i677NJqWY4DvdtuuxUX+Z///OdbludJlV/ov/rVr1oSb35oPvjBD8aMGTNa7sBnos2TKH8Avv71rxfLDj300GKfefLnh2LQoEHF8gwO+eP7+9//vvhBTnvuuWdxxzVTeAaMikz6+QGdPn16cSKnddZZp7hIOvLII4uUnfIL74orrii2z4v0dNBBBxX7zA9Z1vb0Vf35vXUmv0inTp3a6scsv8z+3//7f8WP3sUXX1wsy7v2+UWbX2CbbbZZsSwvSnbfffcirB122GHFsrzznF96b3/724syTXmeLlq0qPhByPN62LBhxfIf/ehHxRf+j3/84yIEpzyP85zLH4Gsjaqox+ekEbK88wfvxRdfjMcff7zVc8q4Z/KHNm8gZHnk+22P8u2Z/A546qmnivf5X//1X8WyLKssj0suuaS425vloXy7ZtNNNy1u9OQF7+23316UUS39sTy7c21S7zLOGqW8+ZY1/hV53PkesyY1Q0jemFXGjSWAdFPb8JHyTkaeaHfffXfLsvzhzJMsL0qqq9uymjAvhH/4wx+2nIBZlZcXLZnAq+XfOS9InvCVO/V54ucHrnLypa233jre8pa3FPusnIB5LPk477zzWsJH+uhHP1p8+V155ZXFByTlv/Mi9fDDD29ZL6so80NwwgknFHdrKl+SfU1/fm+dqf7yrcgaoFe/+tWtztWsHXrb297WqhzyfMov1TynKj+Gv/zlL4uq7DyHqh1xxBFFs8S8q5N3bVKep9kksfIlnbJpQQagXPeFF16IVVZZpW6fk7LddNNNRTlmVXutantl3DP5Pv7xj38U31kp72xms6C2F5HKt2fy2FN1zX3K952/G3khl5Rv1+Txti3LWvpjeXb12mRldaWMc51av39ZNhkU8vevEkCUceMIIL0gq8WefvrpVm03s4ouT6oddtih1bp5cmatRF6oVORdkDxJK3egKrJtYVb55bp5Aua/s115Xjy3letmm8A8ltxXbpM/0m1ff5NNNomXvexlK7x+fvG1bTqS+6w831cv0vvze+upRx99tLhjkvLuS17gZbVvW1lG2YyvonLOtD2n8u+8WMnnK1/U+e/qL8nqfV5wwQUxe/bsIgjV43NStmyHm9X1GXLzPbWljHsum0pk2+kHHnigaIaV7ymPL2sxszY6byYo357LphvZ9CObq2RfwWxSkn0Ssi161pJn2FO+vas/lmd3rk0aKftXpOprNWXcOAJIL8gfwky+1R2G8kTPAJAX/G3lsuqmP7nuxhtvXHO9lF9YKVP6woUL291nZd3sm1L5oLW3bmWflddvb7086avX7Wv683vriawizlqfyp2Szs6TPOcqd3Vy3Ry8oG0nyXwuL1zanlNZhVxrnynXzS/qenxOypa1jH/729+Kav1alHHPzZkzpyibfffdtwh42XQw23yfc845RfOgvOuofHsumw9nM5PsGJsDlqR8L1k7XGlOrHx7V38sz+5cmzRSdl7P5lR77bVXyzJl3DgDOoDkBWiOkNQVtUZNSNn0Ir+o3/3ud7c6MbN9Z3vbrb766i3PV9Ztb73qfXW2z+6sW6l6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fPkhyEd/05/fW0fyTnFX5UhC1RNgdSRr/2pNhtRWjreeTd/y0Zl6fE4apb1yV8Y9k02B8gZCrRsn1ZRvz2QfwbZ3iGtRvl3T1WuE/lie3bk2WRldKePsWN4dyrh8AggAAFAaAQQAACiNAAIAAJRGAAEAAEojgAAAAKURQAAAgNIIIAAAQGkEEAAAoDQCCAAAUBoBBAAAKI0AAkCvOfnkk+Pzn/98LF68uNGHAkCTEkAA6DWDBg0qHgDQHgEEAAAojQACQNN67rnnYvXVV2/0YQDQiwQQAOLpp5+OE088Ma699tp4+OGHY9iwYfGa17wmvvKVr8S2224bN998c5xzzjnxu9/9Lh599NHYaKONYv/9948vfvGLnQaECy+8MKZMmRJ/+tOf4sknn4wRI0bExz/+8fjwhz/car0tt9wyxowZEx/72MfihBNOiLvuuiu+/OUvx1VXXRVPPPFEzJo1a4V9b7311rHVVlvF9ddf36vlAUD9CCAAxIc+9KHiQj+DwStf+cp4/PHHi9Bx9913FwHkRz/6UTz77LPx0Y9+NNZff/247bbb4txzz40HH3wwrrjiig73/e1vfzu22Wab2HfffWPo0KHx05/+tNjPkiVL4iMf+UjLetl35C9/+UtMmjSpOJ4PfvCDRcBYa621in//+c9/jle96lUt6//+97+POXPmxEknnVS3cgGg9wkgAMTPfvazOPzww4saj4pPf/rTLf/O5auttlrL34cddlhRk5E1FX//+9/jZS97Wbv7vummm1ptm+Fjr732irPOOqtVAEnz5s2L6dOnx/jx41uWZQDKYJS1KFnjUpF/r7322rHffvv17E0D0BACCACx7rrrFs2rsvnVJptsssLz1QHimWeeKWpDXv/61xfD7d55550dBpDqbZ966ql44YUX4g1veEP8/Oc/j3/961+xzjrrtDz/ile8olX4SC95yUuK2pOpU6e2BJB83R/+8IdF+FhjjTV6/L4BKJ8AAkBRw/H+978/Xv7yl8cOO+wQe++9d7zvfe8rAkF64IEHYvLkyUXzqQULFrRsl82msl9HR37zm98UzaRuvfXWIry03bZtAKkljyUDRzYL22WXXeKGG26If/zjH3HQQQetzNsGoAEEEADigAMOKGolrr766qJm4owzzojTTz+9+Hv33XcvaiWyI/jxxx/f0i8j+38cfPDBHU46eM899xTbZr+Ss88+uwg4q666alx33XXxta99bYVt26vNmDBhQtHxPZtdZQDJ//7/9u6YJdUojAP4oXBxC4IkhxaR1r6BELTY1NroGLhELs19hpYIo9klHI2+gKMfIqi1wSC4PAeK8nbzxr33vb74+8GLKL56cPLPOc/z1Gq1tLu7+1d/BwD+PQEEgGxjYyN3porr8fEx7ezspLOzs/xHP4q9r6+v0+Hh4dv7R6PR3M+MHZPn5+f8WK/X316/vb391tpWVlZycfrV1VXujBXduqJQ3dBDgPIRQACWXOxCRBveqLV4tb6+njY3N9N0Ok2rq6tv73svdjDmBYDP7o1jV/1+/9vrjONWsYsSwePp6elDGAKgPAQQgCUXheBRRB5zPWL2R3SWihqL8XicO1Vtb2/njlfHx8e541UElcFgkI9kzbO3t5cqlUra39/PwSG+6+LiIu+23N/ff2ud0Q0r2vlGS+BoxxvPASgfAQRgyVWr1XR0dJRrP6LmI3YrGo1GOj8/z/M3wnA4TN1uNx9/isGDBwcH+Z4ILLPe74o0m80cVmLI4cnJST7O9TpLpNPp/HTfvB2VKEbv9Xr5EYByEkAAllzsUESwiOtXovA85nPMenl5+fA8ul3NDgZst9v5mhVdt96LgvXfWetrPQgA5SSAAFAal5eXqdVqfTl3BIDFJoAAsNBidkh0vbq7u0uTySTd3Nz87yUB8AcEEAAW2sPDQ+54tba2lk5PTz89zgVAeQggACy0ra2tL4cdAlAuAggAAFAYAQQAACiMAAIAABRGAAEAAAojgAAAAIURQAAAgMIIIAAAQGEEEAAAoDACCAAAUBgBBAAAKMwP8DUaYj2iHhkAAAAASUVORK5CYII=" name="Picture 2" align="bottom" width="506" height="380" border="0"></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">After
+the outlier removal the data points on the plot are located much
+closer to each other with four of them positioned farther away. Those
+data points represent highest paid individuals equally divided
+between POIs and non-POIs and because of that cannot be considered
+outliers. They are retained in the dataset that is used for a model
+selection.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Feature
+selection</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Features
+are available as a financial data and an email usage data on the
+employees.  POIs belong to the upper management of the company, so
+they should differ from the rest in their compensation amounts. Also,
+the levels of emails exchange between POIs should be higher than
+between POIs and non-POIs. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Features
+were selected by initial filtering based on amounts of occurrences of
+missing values. First, irrelevant features such as 'email_address'
+and 'other' were removed. After that, features with NaNs over 100
+were eliminated from the list.  with evaluation of the quality of the
+prediction by a classifier (accuracy, precision, recall, f1 score).
+Features were added and/or replaced and the output of the classifier
+evaluated. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">initial
+list of features:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">['poi',
+'salary', 'to_messages', 'deferral_payments', 'total_payments',
+'exercised_stock_options', 'bonus', 'restricted_stock',
+'shared_receipt_with_poi', 'restricted_stock_deferred',
+'total_stock_value', 'expenses', 'loan_advances', 'from_messages',
+'from_this_person_to_poi', 'director_fees', 'deferred_income',
+'long_term_incentive', 'from_poi_to_this_person']</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of features:  19</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of NaNs for each feature:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[('poi',
+0), ('salary', 51), ('to_messages', 60), ('deferral_payments', 107),
+('total_payments', 21), ('exercised_stock_options', 44), ('bonus',
+64), ('restricted_stock', 36), ('shared_receipt_with_poi', 60),
+('restricted_stock_deferred', 128), ('total_stock_value', 20),
+('expenses', 51), ('loan_advances', 142), ('from_messages', 60),
+('from_this_person_to_poi', 60), ('director_fees', 129),
+('deferred_income', 97), ('long_term_incentive', 80),
+('from_poi_to_this_person', 60)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">list
+of features after removal of those with high NaN counts:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">['poi',
+'salary', 'to_messages', 'total_payments', 'exercised_stock_options',
+'bonus', 'restricted_stock', 'shared_receipt_with_poi',
+'total_stock_value', 'expenses', 'from_messages',
+'from_this_person_to_poi', 'deferred_income', 'long_term_incentive',
+'from_poi_to_this_person'] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of features remaining:  15 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Selection
+on the remaining features was performed by testing of the algorithm
+performance on all combinations of 3, 4 and 5 features from the list
+by comparing their F1 scores using StratifiedShuffleSplit method.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">top
+10 sorted 3 feature combinations scores:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(['poi',
+'total_payments', 'exercised_stock_options', 'long_term_incentive'],
+0.627), (['poi', 'exercised_stock_options', 'bonus',
+'long_term_incentive'], 0.573), (['poi', 'to_messages', 'bonus',
+'long_term_incentive'], 0.533), (['poi', 'bonus', 'from_messages',
+'long_term_incentive'], 0.53), (['poi', 'total_payments',
+'exercised_stock_options', 'from_poi_to_this_person'], 0.517),
+(['poi', 'total_stock_value', 'expenses', 'from_this_person_to_poi'],
+0.517), (['poi', 'salary', 'total_payments',
+'exercised_stock_options'], 0.516), (['poi', 'total_payments',
+'exercised_stock_options', 'deferred_income'], 0.514), (['poi',
+'to_messages', 'bonus', 'deferred_income'], 0.503), (['poi',
+'salary', 'shared_receipt_with_poi', 'expenses'], 0.498)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of 3 feature combinations tested:  364 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">top
+10 sorted 4 feature combinations scores:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(['poi',
+'exercised_stock_options', 'total_stock_value', 'expenses',
+'from_this_person_to_poi'], 0.687), (['poi', 'to_messages',
+'exercised_stock_options', 'expenses', 'from_this_person_to_poi'],
+0.61), (['poi', 'total_payments', 'exercised_stock_options',
+'expenses', 'from_this_person_to_poi'], 0.597), (['poi',
+'total_stock_value', 'expenses', 'from_messages',
+'from_this_person_to_poi'], 0.577), (['poi',
+'shared_receipt_with_poi', 'expenses', 'from_messages',
+'long_term_incentive'], 0.574), (['poi', 'to_messages', 'bonus',
+'shared_receipt_with_poi', 'long_term_incentive'], 0.57), (['poi',
+'to_messages', 'total_stock_value', 'expenses',
+'from_this_person_to_poi'], 0.56), (['poi', 'salary',
+'total_payments', 'exercised_stock_options', 'deferred_income'],
+0.557), (['poi', 'salary', 'total_stock_value', 'expenses',
+'from_this_person_to_poi'], 0.55), (['poi', 'to_messages', 'bonus',
+'from_this_person_to_poi', 'long_term_incentive'], 0.547)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of 4 feature combinations tested:  1001 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">top
+10 sorted 5 feature combinations scores:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(['poi',
+'to_messages', 'exercised_stock_options', 'total_stock_value',
+'expenses', 'from_this_person_to_poi'], 0.67), (['poi', 'salary',
+'to_messages', 'exercised_stock_options', 'expenses',
+'from_this_person_to_poi'], 0.66), (['poi', 'salary',
+'exercised_stock_options', 'expenses', 'from_messages',
+'from_this_person_to_poi'], 0.66), (['poi', 'to_messages',
+'exercised_stock_options', 'expenses', 'from_this_person_to_poi',
+'long_term_incentive'], 0.647), (['poi', 'exercised_stock_options',
+'expenses', 'from_messages', 'from_this_person_to_poi',
+'long_term_incentive'], 0.647), (['poi', 'exercised_stock_options',
+'total_stock_value', 'expenses', 'from_messages',
+'from_this_person_to_poi'], 0.637), (['poi', 'salary',
+'exercised_stock_options', 'total_stock_value', 'expenses',
+'from_this_person_to_poi'], 0.603), (['poi', 'salary',
+'total_payments', 'exercised_stock_options', 'expenses',
+'from_this_person_to_poi'], 0.597), (['poi', 'total_payments',
+'exercised_stock_options', 'expenses', 'from_this_person_to_poi',
+'long_term_incentive'], 0.58), (['poi', 'to_messages',
+'total_stock_value', 'expenses', 'from_messages',
+'from_this_person_to_poi'], 0.577)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">number
+of 5 feature combinations tested:  2002 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+higher scores were observed when combinations of 4 features were
+tested.  </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Among
+the size 3 combinations the best scorer was: (['poi',
+'total_payments', 'exercised_stock_options', 'long_term_incentive'],
+0.627). Among the size 4: [(['poi', 'exercised_stock_options',
+'total_stock_value', 'expenses', 'from_this_person_to_poi'], 0.687)
+and size 5: (['poi', 'to_messages', 'exercised_stock_options',
+'total_stock_value', 'expenses', 'from_this_person_to_poi'], 0.67). </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+top scores were 0.627, 0.687 and 0.67 for size 3, 4 and 5
+combinations respectively.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Finally,
+the best feature combination was selected for model building from the
+size 4 pool:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">top
+scoring feature combination:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">['poi',
+'to_messages', 'exercised_stock_options', 'total_stock_value',
+'expenses', 'from_this_person_to_poi']</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+best feature combination was tested for DT algorithm performance via
+StratifiedShuffleSplit method with 1000 iterations.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">StratifiedShuffleSplit
+testing: </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision:
+ 0.52307</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Recall:
+ 0.458</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">F1
+score:  0.45448</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">In
+addition, an attempt was made to create an extra feature that was not
+present in an original dataset. It can be assumed that POIs send
+emails to non-POIs more frequently than other way around. The new
+feature was created as a ratio of the amounts of emails for each
+individual received from non-POIs and POIs. The updated features list
+was: ['poi','salary','bonus','restricted_stock','deferred_income',
+'email_ratio']. The corresponding item 'email_ratio' was added as
+dictionary key/value pair into the original dataset.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Two
+algorithms were evaluated in this study: KNN and Decision Tree. For
+the KNN, the min max scaling of the features was implemented. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">For
+the Decision Tree (DT) classifier feature_importances were extracted
+and evaluated. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Features:
+'exercised_stock_options', 'total_stock_value', 'expenses',
+'from_this_person_to_poi', 'email_ratio'</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">feature
+importances:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[
+0.3357888   0.00446553  0.42494095  0.17618032  0.0586244 ]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Based
+on this output alone, the importance of an engineered 'email_ratio'
+feature is very low (0.059) and the feature can be ignored. Same is
+true for the 'total_stock_value' feature (0.004). As was mentioned
+before, the size of the dataset is very small, so to assess the
+importance more thoroughly the k-fold evaluation was performed:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">average
+feature importance k-fold:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[
+0.3049197   0.0018348   0.47030899  0.20607017  0.01686633]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to this evaluation, the importances of the features in question are
+even lower(0.002 and 0.017). If repeated 10 times, the result of the
+k-fold evaluation does not change dramatically:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">average
+feature importances over 10 times repeat of k-fold cross-validation :</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[
+0.30299863  0.0137134   0.46547375  0.2012535   0.01656072].</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Algorithm
+performance was assessed with and without features in question.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DT
+algorithm performance scores with all initially selected features:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">StratifiedShuffleSplit
+testing: </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision:
+ 0.52042</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Recall:
+ 0.454</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">F1
+score:  0.45473</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DT
+algorithm performance scores with all initially selected features
+plus engineered feature:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">StratifiedShuffleSplit
+testing: </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision:
+ 0.52098</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Recall:
+ 0.4485</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">F1
+score:  0.45473</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DT
+algorithm performance scores with initially selected features minus
+total_stock_value:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">StratifiedShuffleSplit
+testing: </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision:
+ 0.51591</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Recall:
+ 0.473</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">F1
+score:  0.46514</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to this evaluation, the engineered feature does not improve the
+algorithm performance (F1 score is the same) compared to initially
+selected features and can be dropped. Removal of the
+'total_stock_value' feature slightly lowers Precision (0.51 vs 0.52),
+but improves recall (0.473 vs 0.454). F1 score is actually slightly
+higher without this feature (0.465 vs 0.455). This feature can also
+be dropped from the final model.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Algorithm
+selection</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">As
+mentioned above, </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">two
+algorithms were evaluated in this study: </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">k-Nearest
+neighbors classifier (KNN) </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">and
+</font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">Decision
+Trees (DT). DT was chosen to for the final model building.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt"><b>KNN
+Classifier Evaluation</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">For
+the KNN classifier evaluation a range of the 'n_neighbors' parameter
+was searched:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_neighbors
+range searched:  [2 3 4 5], by using GridSearchCV  or
+cross-validation. According to the GridSearchCV estimation the best
+parameter is: best parameter:  {'n_neighbors': 2}.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Below
+is the output of the cross-validation evaluation of the classifier
+with the range of the n_neighbors:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_neighbors
+= 2 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.0555555555556 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.0740740740741 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.858574399697 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_neighbors
+= 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.194444444444 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.140740740741 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.826810361127 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_neighbors
+= 4 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.0555555555556 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.0740740740741 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.850444318397 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_neighbors
+= 5 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.222222222222 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.122222222222 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.157407407407 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.842692380412</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">To
+summarize F1 scores over different parameter values:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+f1 scores of cross-validation (n_neighbors, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.07407407407407407), (3, 0.14074074074074075), (4,
+0.07407407407407407), (5, 0.15740740740740741)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to this output the best F1 score is achieved with n_neighbors = 5. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">To
+test another way of validation a k-fold cross-validation method was
+used to compute f1 scores:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+f1 scores of k-fold cross-validation (n_neighbors, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.1111111111111111), (3, 0.14074074074074075), (4, 0.0), (5,
+0.17857142857142858)]. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+output was largely the same as the one before with the
+cross_validation cross_val_score method. n_neighbors = 5 parameter
+value resulted in the highest F1 score.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">In
+an attempt to make the evaluation more precise, the k-fold approach
+was repeated 10 times and the average F1 scores were computed:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+average f1 over 10 times repeat of k-fold cross-validation
+(n_neighbors, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.056245791245791245), (3, 0.13598845598845599), (4,
+0.031851851851851853), (5, 0.1061904761904762)].</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">This
+time n_neighbors = 3 parameter value resulted in the highest F1
+score, but the difference was not dramatic.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Finally,
+KNN classifier was evaluated by StratifiedShuffleSplit method from
+‘tester’ script:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Pipeline(steps=[('scaler',
+MinMaxScaler(copy=True, feature_range=(0, 1))), ('knn',
+KNeighborsClassifier(algorithm='auto', leaf_size=30,
+metric='minkowski',</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">          
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">metric_params=None,
+n_jobs=1, n_neighbors=5, p=2,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">          
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">weights='uniform'))])</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">	Accuracy:
+0.85277	Precision: 0.58848	Recall: 0.14300	F1: 0.23009	F2: 0.16851</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">	Total
+predictions: 13000	True positives:  286	False positives:  200	False
+negatives: 1714	True negatives: 10800</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+highest F1 score calculated before was 0.18 and the tester script
+produced F1 score of 0.23 and n_neighbors parameter value of 5, which
+was the same as in cross_validation cross_val_score and k-fold
+cross-validation methods.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt"><b>DT
+Classifier Evaluation</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DT
+classifier was evaluated largely in the same manner as a KNN
+classifier. Feature scaling was not implemented. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">For
+the DT classifier evaluation a range of the values of the
+‘</font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split</font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">'
+parameter was searched by using GridSearchCV  or cross-validation:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+range searched:  [10, 11, 12, 13, 14] </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">
+</font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to the GridSearchCV estimation the best parameter is: </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">best
+parameter:  {'min_samples_split': 11}</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Below
+is the output of the cross-validation evaluation of the classifier
+with the range of the </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">'min_samples_split'</font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">:
+</font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 10 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.233333333333 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.143939393939 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.843070523728 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 11 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.466666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.177777777778 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.232323232323 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.827944791076 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 12 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.466666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.177777777778 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.232323232323 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.827944791076 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 13 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.133333333333 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.121212121212 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.811684628474 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using cross_validation cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 14 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.133333333333 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.111111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.121212121212 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.811684628474 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">To
+summarize F1 scores over different parameter values:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+f1 scores of cross-validation (min_samples_split, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.14393939393939392), (11, 0.23232323232323235), (12,
+0.23232323232323235), (13, 0.1212121212121212), (14,
+0.1212121212121212)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to this analysis the highest F1 score of 0.23 is achieved with the
+‘min_samples_split’ values of 11 and 12, which is in an agreement
+with the </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">GridSearchCV
+outcome.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">A
+k-fold cross-validation method was also implemented to compute f1
+scores:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using k-fold and cross_validation
+cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 10 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.425925925926 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.488888888889 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.407142857143 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.834440753045 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using k-fold and cross_validation
+cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 11 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.121212121212 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.266666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.166666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.834994462901 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using k-fold and cross_validation
+cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 12 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.311111111111 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.233333333333 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.265151515152 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.804171280915 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using k-fold and cross_validation
+cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 13 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.166666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.0666666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.0952380952381 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.850867478774 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+classifier evaluation using k-fold and cross_validation
+cross_val_score:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">n_folds:
+ 3 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split
+= 14 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">precision:
+0.416666666667 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">recall:
+0.2 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">f1
+score: 0.213675213675 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">accuracy:
+ 0.826135105205 </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">k-fold
+method produced somewhat different output with ‘min_samples_split’
+parameter value of 12 resulting in F1 score of 0.26 which agreed with
+the previous method, but the second best was a value of 14, with F1
+score of 0.21.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+f1 scores of k-fold cross-validation (min_samples_split, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.4071428571428572), (11, 0.16666666666666671), (12,
+0.26515151515151514), (13, 0.095238095238095247), (14,
+0.21367521367521369)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">After
+that k-fold validation was repeated 10 times and the average scores
+computed:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+average f1 over 10 times repeat of k-fold cross-validation
+(min_samples_split, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.19942261442261441), (11, 0.23535469976646445), (12,
+0.2111902911902912), (13, 0.19044159544159542), (14,
+0.22013912013912015)].</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">This
+in best value of ‘min_samples_split’ parameter of 11 and F1 score
+of 0.23, same as with first evaluation method of cross_validation
+cross_val_score. Second best was 14 with F1 score of 0.22.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+bottom line here is that different parameter values could give
+similar results depending on the evaluation method. This may be due
+to the dataset qualities discussed earlier.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Evaluation
+of the DT classifier was performed by StratifiedShuffleSplit method
+from ‘tester’:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DecisionTreeClassifier(class_weight=None,
+criterion='gini', max_depth=None,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">max_features=None,
+max_leaf_nodes=None, min_samples_leaf=1,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split=12,
+min_weight_fraction_leaf=0.0,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">presort=False,
+random_state=None, splitter='best')</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">	Accuracy:
+0.83946	Precision: 0.46827	Recall: 0.32100	F1: 0.38090	F2: 0.34255</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">	Total
+predictions: 13000	True positives:  642	False positives:  729	False
+negatives: 1358	True negatives: 10271</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">All
+evaluation methods show better performance of the DT algorithm over
+KNN under the testing settings. Best F1 score for the KNN were 0.18
+using k-fold cross-validation evaluation and 0.23 using
+StratifiedShuffleSplit method. For the DT, the corresponding metrics
+were 0.23 and 0.38. The DT algorithm was chosen for a model building.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">As
+was mentioned in the feature selection section, the final model was
+built on the selected after testing of multiple combinations of
+features and two low-importance features were dropped. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">The
+final assessment of the chosen DT algorithm was performed using
+StratifiedShuffleSplit_test function or test_classifier from ‘tester”
+script:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DT
+algorithm performance scores with initially selected features minus
+total_stock_value:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">StratifiedShuffleSplit
+testing: </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision:
+ 0.51871</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Recall:
+ 0.4725</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">F1
+score:  0.46533</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"> <font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+evaluation by StratifiedShuffleSplit from tester:</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">DecisionTreeClassifier(class_weight=None,
+criterion='gini', max_depth=None,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">max_features=None,
+max_leaf_nodes=None, min_samples_leaf=1,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">min_samples_split=11,
+min_weight_fraction_leaf=0.0,</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%">           
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">presort=False,
+random_state=None, splitter='best')</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">	Accuracy:
+0.86486	Precision: 0.53020	Recall: 0.47400	F1: 0.50053	F2: 0.48427</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><a name="_GoBack"></a>
+<font face="Arial, serif"><font size="3" style="font-size: 12pt">	Total
+predictions: 14000	True positives:  948	False positives:  840	False
+negatives: 1052	True negatives: 11160</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Algorithm
+parameters</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Parameters
+are tuned for the purpose of achieving an optimal performance of the
+algorithm on an unseen data. Learning is performed on a training set,
+so the algorithm is optimized for the performance, but there is a
+danger of overfitting. To address this issue an optimization is
+performed. A subset of parameters of the algorithm and their
+combinations are evaluated for the performance using a certain
+procedure, such as cross-validation in search for the best
+performance on test set. For both KNN and DT algorithms parameters
+were tuned both manually by computing performance over range of
+parameter values and by Grid Search. The procedures are described in
+detail in ‘Algorithm selection’ section. For the KNN
+'n_neighbors' </font></font><font face="Arial, serif"><font size="3" style="font-size: 12pt">parameter
+was optimized and 'min_samples_split' for the DT. Those were the
+parameters that had the most influence on the performance of the
+algorithm in the initial testing and were chosen for detailed
+evaluation.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Validation</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Validation
+is testing algorithm performance on an unseen data. We do not have an
+access to the whole population, so we do not want our classifier to
+overfit the data we have and show poor performance on other subsets
+of the population.  In practice, the data is split into training and
+test sets. The training set is used to train classifier and test set
+represents an unseen data that is used to test the performance of the
+trained algorithm. Classic mistake is testing on a training set,
+which may result in overfitting and poor performance on a test set.
+For both KNN and DT validation was performed by cross-validation:
+cross_validation.cross_val_score, KFold and StratifiedShuffleSplit
+methods.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="4" style="font-size: 14pt"><b>Evaluation
+metrics</b></font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Precision
+is a measure of a proportion of the selected items that are true
+positives, so how many selected item are relevant. Recall is a ratio
+of true positives that were selected to all positives, so reflects
+selectivity. F1 is a combined measure where precision and recall are
+evenly weighted. The relative importance of each measure can depend
+on the goal of the classifier.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+f1 scores of k-fold cross-validation (n_neighbors, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.0), (3, 0.1851851851851852), (4, 0.083333333333333329), (5,
+0.24444444444444446)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+precision scores of k-fold cross-validation (n_neighbors, precision:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.0), (3, 0.25), (4, 0.33333333333333331), (5, 0.5)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">KNN
+recall scores of k-fold cross-validation (n_neighbors, recall:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(2,
+0.0), (3, 0.21428571428571427), (4, 0.047619047619047616), (5,
+0.16666666666666666)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+f1 scores of k-fold cross-validation (min_samples_split, f1:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.13333333333333333), (11, 0.25589225589225589), (12,
+0.20875420875420878), (13, 0.32064232064232062), (14,
+0.13333333333333333)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+precision scores of k-fold cross-validation (n_neighbors, precision:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.22222222222222221), (11, 0.32857142857142857), (12,
+0.23333333333333331), (13, 0.42592592592592587), (14,
+0.1111111111111111)] </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">Tree
+recall scores of k-fold cross-validation (n_neighbors, recall:)</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">[(10,
+0.125), (11, 0.28703703703703703), (12, 0.18888888888888888), (13,
+0.28968253968253971), (14, 0.16666666666666666)]</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">After
+k-fold cross-validation of the KNN classifier the higher F1,
+precision and recall scores coincided with the n_neighbors parameter
+value of 5: (5, 0.24), (5, 0.5), (5, 0.17).</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">For
+the DT classifier, the highest values of all three metrics were
+associated with a min_samples_split parameter value of 13: (13,
+0.32), (13, 0.42), (13, 0.29).</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">In
+other words, for a KNN classifier the precision score was 0.5, which
+means 50% of the items that were selected were true positives (those
+that should have been selected) and 50% were false positives. 0.17
+recall means that 17% of those items that should have been selected
+were actually selected. For a DT classifier, the precision was 0.42
+and recall was 0.29. That means the DT classifier had less relevant
+items among the selected pool (42% compared to 50% for KNN), so was
+less precise, but had more (29% compared to 17%) relevant items
+selected overall. </font></font>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+<p style="margin-bottom: 0in; line-height: 100%"><font face="Arial, serif"><font size="3" style="font-size: 12pt">According
+to this evaluation DT showed better overall performance, based on F1
+scores. KNN was slightly more selective than DT, so better selected
+items that are relevant, but was less sensitive, so selected less of
+the items that should be selected.</font></font></p>
+<p style="margin-bottom: 0in; line-height: 100%"><br>
+</p>
+</body>
+</html>
